@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #08090c;
+  color: #e8eaf0;
+  font-family: 'Instrument Sans', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #0d0f14; }
+::-webkit-scrollbar-thumb { background: #232730; border-radius: 3px; }
+
+/* Film grain noise */
+.noise {
+  position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat; background-size: 128px;
+}
+
+/* Scan line overlay for panels */
+.scanlines {
+  position: relative; overflow: hidden;
+}
+.scanlines::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,229,199,0.015) 2px,
+    rgba(0,229,199,0.015) 4px
+  );
+}
+
+/* Grid background */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(0,229,199,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,199,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Glow effects */
+.glow-mint { box-shadow: 0 0 30px rgba(0,229,199,0.08), 0 0 60px rgba(0,229,199,0.03); }
+.glow-mint-strong { box-shadow: 0 0 40px rgba(0,229,199,0.15), 0 0 80px rgba(0,229,199,0.06), inset 0 1px 0 rgba(0,229,199,0.1); }
+
+/* Border glow */
+.border-glow {
+  border: 1px solid rgba(0,229,199,0.15);
+  background: linear-gradient(135deg, rgba(0,229,199,0.03), transparent 60%);
+}
+
+/* Code blocks */
+.code-block {
+  background: #0d0f14;
+  border: 1px solid #1e2230;
+  border-radius: 8px;
+  padding: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #b0b8c8;
+}
+
+/* Perspective */
+.perspective { perspective: 1000px; }
+
+/* Pulse ring */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2); opacity: 0; }
+}
+.pulse-ring::before {
+  content: ''; position: absolute; inset: -4px;
+  border-radius: 50%; border: 1.5px solid currentColor;
+  animation: pulse-ring 2s ease-out infinite;
+}
