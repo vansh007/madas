@@ -1,6 +1,7 @@
 """LangGraph orchestration for the MADAS diagnosis pipeline."""
 
 from __future__ import annotations
+import os
 from typing import TypedDict, Literal
 from langgraph.graph import StateGraph, END
 
@@ -28,8 +29,28 @@ class DiagnosisState(TypedDict):
 # ── Node Functions ────────────────────────────────────────────────────────────
 
 def rag_retrieval(state: DiagnosisState) -> dict:
-    """Retrieve similar past incidents from memory."""
-    results = search_similar(state["user_input"], top_k=3)
+    """Retrieve similar past incidents from memory.
+
+    RAG is optional: set DISABLE_RAG=true to skip it entirely (useful on
+    lightweight cloud hosts without the sentence-transformers/torch stack).
+    Any failure here degrades gracefully — the pipeline continues without
+    historical context rather than crashing the whole diagnosis.
+    """
+    if os.getenv("DISABLE_RAG", "").lower() in ("1", "true", "yes"):
+        return {
+            "rag_context": "",
+            "events": state.get("events", []) + [{
+                "agent": "memory",
+                "action": "rag_retrieval",
+                "detail": "Incident memory disabled",
+                "data": {"incident_count": 0},
+            }],
+        }
+
+    try:
+        results = search_similar(state["user_input"], top_k=3)
+    except Exception:
+        results = []  # Embedder/index unavailable — proceed without memory.
     context = ""
     if results:
         for i, r in enumerate(results, 1):

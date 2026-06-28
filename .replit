@@ -1,0 +1,20 @@
+run = "bash start.sh"
+entrypoint = "backend/main.py"
+modules = ["python-3.11"]
+
+[nix]
+channel = "stable-24_05"
+
+[env]
+# Cloud has no Ollama; use Gemini and skip the heavy RAG stack.
+LLM_PROVIDER = "gemini"
+DISABLE_RAG = "true"
+# Set GEMINI_API_KEY in the Replit "Secrets" tab (do NOT hard-code it here).
+
+[deployment]
+deploymentTarget = "cloudrun"
+run = ["bash", "start.sh"]
+
+[[ports]]
+localPort = 8000
+externalPort = 80

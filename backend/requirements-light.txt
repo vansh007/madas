@@ -1,0 +1,13 @@
+# Lightweight backend deps for resource-constrained hosts (e.g. Replit).
+# Omits faiss-cpu + sentence-transformers (the ~2GB torch stack). Run with
+# DISABLE_RAG=true so the incident-memory step is skipped cleanly.
+fastapi==0.115.0
+uvicorn==0.30.6
+google-generativeai==0.8.3
+langgraph==0.2.53
+langchain-core==0.3.21
+pydantic==2.9.2
+python-dotenv==1.0.1
+sse-starlette==2.1.3
+numpy==1.26.4
+requests==2.32.3
