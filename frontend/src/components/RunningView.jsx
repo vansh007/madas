@@ -13,7 +13,7 @@ const STAGES = [
 // Map each agent to its stage index so streamed events can drive the pipeline.
 const STAGE_INDEX = STAGES.reduce((acc, s, i) => ((acc[s.key] = i), acc), {})
 
-export default function RunningView({ startTime, events = [] }) {
+export default function RunningView({ startTime, events = [], isDemo = false }) {
   const [elapsed, setElapsed] = useState(0)
 
   // Timer
@@ -41,6 +41,12 @@ export default function RunningView({ startTime, events = [] }) {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
+          {isDemo && (
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 mb-4 rounded-full bg-mint/10 border border-mint/25 text-[10px] font-mono text-mint tracking-wider uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-mint animate-pulse" />
+              Demo — replaying a real diagnosis
+            </div>
+          )}
           <div className="inline-flex items-center gap-3 mb-4">
             <motion.div
               animate={{ rotate: 360 }}

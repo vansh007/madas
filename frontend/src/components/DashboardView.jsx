@@ -4,7 +4,7 @@ import {
   Target, Zap, Shield, Scale, Search, Wrench, Database,
   ChevronDown, ChevronRight, AlertTriangle, CheckCircle2,
   Copy, Check, ArrowRight, FileWarning, Clock, Layers,
-  FileText, Download, Tag
+  FileText, Download, Tag, Sparkles
 } from 'lucide-react'
 
 /* ── Severity styling ────────────────────────────────────────── */
@@ -232,7 +232,7 @@ function Timeline({ events }) {
 }
 
 /* ── Main Dashboard ──────────────────────────────────────────── */
-export default function DashboardView({ result, events }) {
+export default function DashboardView({ result, events, isDemo = false }) {
   const verdict = result?.verdict || {}
   const hyp = result?.winning_hypothesis || {}
   const fix = result?.winning_fix || {}
@@ -278,6 +278,22 @@ export default function DashboardView({ result, events }) {
   return (
     <div className="min-h-screen pt-16 pb-20 px-5">
       <div className="max-w-6xl mx-auto">
+        {/* Demo banner */}
+        {isDemo && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-5 flex items-start gap-2.5 p-3 rounded-xl bg-mint/5 border border-mint/20"
+          >
+            <Sparkles className="w-4 h-4 text-mint flex-shrink-0 mt-0.5" />
+            <p className="text-[11px] text-txt-2 leading-relaxed">
+              <span className="text-mint font-semibold">This is a sample run.</span> These results come from a real
+              MADAS diagnosis recorded earlier — no live LLM was called. Set up the backend with a Gemini key or a
+              local Ollama model to analyze your own incidents.
+            </p>
+          </motion.div>
+        )}
+
         {/* Section label */}
         <motion.div
           initial={{ opacity: 0 }}

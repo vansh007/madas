@@ -7,7 +7,7 @@ import DashboardView from './components/DashboardView'
 import { useDiagnosis } from './hooks/useDiagnosis'
 
 export default function App() {
-  const { phase, events, result, error, startTime, providers, run, reset } = useDiagnosis()
+  const { phase, events, result, error, startTime, providers, isDemo, run, runDemo, reset } = useDiagnosis()
   const [mouse, setMouse] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
@@ -63,19 +63,19 @@ export default function App() {
         <AnimatePresence mode="wait">
           {phase === 'idle' && (
             <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
-              <LandingView onSubmit={run} providers={providers} />
+              <LandingView onSubmit={run} onDemo={runDemo} providers={providers} />
             </motion.div>
           )}
 
           {phase === 'running' && (
             <motion.div key="running" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-              <RunningView startTime={startTime} events={events} />
+              <RunningView startTime={startTime} events={events} isDemo={isDemo} />
             </motion.div>
           )}
 
           {phase === 'done' && result && (
             <motion.div key="dashboard" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-              <DashboardView result={result} events={events} />
+              <DashboardView result={result} events={events} isDemo={isDemo} />
             </motion.div>
           )}
 

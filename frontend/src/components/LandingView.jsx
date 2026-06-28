@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Terminal, ArrowRight, Clipboard, Search, Wrench, Scale, ChevronRight, Repeat, AlertCircle } from 'lucide-react'
+import { Terminal, ArrowRight, Clipboard, Search, Wrench, Scale, ChevronRight, Repeat, AlertCircle, Play, Sparkles } from 'lucide-react'
 
 const AGENTS = [
   { name: 'Investigator', desc: 'Parses logs, forms ranked hypotheses', icon: Search, color: '#00e5c7' },
@@ -46,7 +46,7 @@ INFO: Restarts last 7 days: 14`,
   },
 ]
 
-export default function LandingView({ onSubmit, providers }) {
+export default function LandingView({ onSubmit, onDemo, providers }) {
   const [input, setInput] = useState('')
   const [rounds, setRounds] = useState(2)
   const [tilt, setTilt] = useState({ x: 0, y: 0 })
@@ -149,6 +149,33 @@ export default function LandingView({ onSubmit, providers }) {
               </div>
             ))}
           </motion.div>
+
+          {/* Live demo CTA — runs a real recorded diagnosis with no backend/LLM */}
+          {onDemo && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="flex flex-col items-center gap-2 -mt-6 mb-2"
+            >
+              <button
+                onClick={onDemo}
+                className="group inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-semibold
+                  bg-mint/10 text-mint border border-mint/25
+                  hover:bg-mint/15 hover:border-mint/45 hover:shadow-[0_0_28px_rgba(0,229,199,0.15)]
+                  transition-all duration-200"
+              >
+                <span className="relative flex items-center justify-center w-5 h-5 rounded-full bg-mint/15">
+                  <Play className="w-2.5 h-2.5 fill-mint" />
+                </span>
+                Try it once — watch a live demo
+                <Sparkles className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />
+              </button>
+              <p className="text-[10px] font-mono text-txt-3">
+                No setup, no API key — replays a real diagnosis so you can see the full pipeline
+              </p>
+            </motion.div>
+          )}
         </div>
       </header>
 

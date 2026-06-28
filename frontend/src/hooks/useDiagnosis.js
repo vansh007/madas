@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect } from 'react'
+import { DEMO_EVENTS, DEMO_RESULT } from '../demoData'
 
 const API = '/api'
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 /* Parse a raw SSE chunk buffer into complete {event, data} messages.
    Returns [messages, remainingBuffer]. */
@@ -30,6 +32,7 @@ export function useDiagnosis() {
   const [error, setError] = useState(null)
   const [startTime, setStartTime] = useState(null)
   const [providers, setProviders] = useState(null)
+  const [isDemo, setIsDemo] = useState(false)
 
   const refreshProviders = useCallback(async () => {
     try {
@@ -41,8 +44,24 @@ export function useDiagnosis() {
   useEffect(() => { refreshProviders() }, [refreshProviders])
 
   const reset = useCallback(() => {
-    setPhase('idle'); setEvents([]); setResult(null); setError(null); setStartTime(null)
+    setPhase('idle'); setEvents([]); setResult(null); setError(null); setStartTime(null); setIsDemo(false)
   }, [])
+
+  /* Zero-backend guided demo: replays a real recorded run with simulated
+     streaming so visitors see the full pipeline without any LLM set up. */
+  const runDemo = useCallback(async () => {
+    reset()
+    setIsDemo(true)
+    setPhase('running')
+    setStartTime(Date.now())
+    for (const evt of DEMO_EVENTS) {
+      await sleep(850 + Math.random() * 500)
+      setEvents((prev) => [...prev, evt])
+    }
+    await sleep(700)
+    setResult(DEMO_RESULT)
+    setPhase('done')
+  }, [reset])
 
   // Fallback path: single blocking request.
   const runBlocking = useCallback(async (input, maxRounds) => {
@@ -121,5 +140,5 @@ export function useDiagnosis() {
     }
   }, [reset, runBlocking, refreshProviders])
 
-  return { phase, events, result, error, startTime, providers, run, reset, refreshProviders }
+  return { phase, events, result, error, startTime, providers, isDemo, run, runDemo, reset, refreshProviders }
 }
